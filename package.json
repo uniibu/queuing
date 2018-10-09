@@ -1,0 +1,31 @@
+{
+  "name": "queuing",
+  "version": "1.0.0",
+  "description": "que tasks",
+  "private": false,
+  "engines": {
+    "node": ">=8 <=10"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "node test",
+    "drone": "istanbul cover test --report lcovonly && cat ./coverage/lcov.info | coveralls"
+  },
+  "keywords": [
+    "queue task retry"
+  ],
+  "author": "unibtc@gmail.com",
+  "license": "MIT",
+  "repository": "https://github.com/uniibu/queuing",
+  "bugs": {
+    "url": "https://github.com/uniibu/queuing/issues"
+  },
+  "homepage": "https://github.com/uniibu/queuing#readme",
+  "devDependencies": {
+    "coveralls": "^3.0.2",
+    "eslint": "^5.1.0",
+    "istanbul": "^0.4.5",
+    "tape": "^4.9.1"
+  },
+  "dependencies": {}
+}
