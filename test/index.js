@@ -12,5 +12,5 @@ require('./resume');
 require('./autostart');
 require('./array-methods');
 require('./promises');
+require('./retry');
 require('./results');
-require('./reque');

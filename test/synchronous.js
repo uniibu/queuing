@@ -1,17 +1,13 @@
-const tape = require('tape');
+const tape = require('./tape');
 const queue = require('../');
 tape('synchronous', t => {
-  t.plan(4);
+  t.plan(2);
   const actual = [];
   const q = queue({ concurrency: 1 });
   q.on('end', () => {
     const expected = ['one', 'two', 'three'];
     t.equal(actual.length, expected.length);
-    for (const i in actual) {
-      const a = actual[i];
-      const e = expected[i];
-      t.equal(a, e);
-    }
+    t.deepEqual(actual, expected);
   });
   q.push(cb => {
     actual.push('three');

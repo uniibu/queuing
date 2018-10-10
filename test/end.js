@@ -1,4 +1,4 @@
-const tape = require('tape');
+const tape = require('./tape');
 const queue = require('../');
 tape('end', t => {
   t.plan(3);

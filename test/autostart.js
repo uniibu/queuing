@@ -1,4 +1,4 @@
-const tape = require('tape');
+const tape = require('./tape');
 const queue = require('../');
 tape('autostart', t => {
   t.plan(9);
@@ -6,8 +6,10 @@ tape('autostart', t => {
   const actual = [];
   const q = queue({ autostart: true });
   let numEndHandlers = 0;
-  q.on('end', () => {
+  q.on('success', () => {
     numEndHandlers++;
+  });
+  q.on('end', () => {
     t.equal(actual.length, numEndHandlers);
     for (const i in actual) {
       t.equal(actual[i], expected[i]);
