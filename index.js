@@ -6,12 +6,24 @@ class Queuing extends EventEmitter {
     this.timeout = options.timeout || 0;
     this.autostart = options.autostart || false;
     this.results = options.results || null;
-    this.reque = options.reque || false;
+    this.retry = options.retry || false;
+    this.delay = options.delay || 0;
     this.pending = 0;
     this.session = 0;
+    this.calls = 0;
     this.running = false;
     this.jobs = [];
     this.timers = {};
+    this._retryListen();
+  }
+  _retryListen() {
+    const self = this;
+    self.on('error', (err, job) => {
+      if (self.retry) {
+        self.jobs.push(job);
+        self.emit('retry', err, job);
+      }
+    });
   }
   slice(begin, end) {
     this.jobs = this.jobs.slice(begin, end);
@@ -45,14 +57,19 @@ class Queuing extends EventEmitter {
     let timeoutId = null;
     let didTimeout = false;
     let resultIndex = null;
+    function next(...args){
+      if(self.delay){
+        setTimeout(() => {
+          _next(...args);
+        }, self.delay);
+      }else{
+        _next(...args);
+      }
+    }
+    function _next(err, result) {
 
-    function next(err, result) {
       if (once && self.session === session) {
         once = false;
-        if (self.reque && err) {
-          self.emit('retry', err, job);
-          return self.start();
-        }
         self.pending--;
         if (timeoutId !== null) {
           delete self.timers[timeoutId];
@@ -74,11 +91,12 @@ class Queuing extends EventEmitter {
           }
         }
       }
+
     }
     if (this.timeout) {
       timeoutId = setTimeout(() => {
         didTimeout = true;
-        if (self.listeners('timeout').length > 0) {
+        if (self.listenerCount('timeout') > 0) {
           self.emit('timeout', next, job);
         } else {
           next();
