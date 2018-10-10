@@ -9,6 +9,7 @@
   "main": "index.js",
   "scripts": {
     "test": "node test",
+    "lint": "eslint --fix --ext .js .",
     "drone": "istanbul cover test --report lcovonly",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const tape = require('./tape');
 const queue = require('../');
 tape('timeout', t => {
