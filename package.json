@@ -1,6 +1,6 @@
 {
   "name": "queuing",
-  "version": "1.2.0",
+  "version": "1.0.0",
   "description": "que tasks",
   "private": false,
   "engines": {
@@ -17,7 +17,7 @@
     "postpublish": "git push origin master --follow-tags"
   },
   "keywords": [
-    "queue task retry"
+    "queue task retry queuing"
   ],
   "author": "unibtc@gmail.com",
   "license": "MIT",
