@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const util = require('util');
 class Queuing extends EventEmitter {
   constructor(options = {}) {
     super();
@@ -10,7 +11,6 @@ class Queuing extends EventEmitter {
     this.delay = options.delay || 0;
     this.pending = 0;
     this.session = 0;
-    this.calls = 0;
     this.running = false;
     this.jobs = [];
     this.timers = {};
@@ -51,23 +51,14 @@ class Queuing extends EventEmitter {
       return;
     }
     const self = this;
-    const job = this.jobs.shift();
+    let job = this.jobs.shift();
     let once = true;
     const session = this.session;
     let timeoutId = null;
     let didTimeout = false;
     let resultIndex = null;
-    function next(...args){
-      if(self.delay){
-        setTimeout(() => {
-          _next(...args);
-        }, self.delay);
-      }else{
-        _next(...args);
-      }
-    }
-    function _next(err, result) {
 
+    function next(err, result) {
       if (once && self.session === session) {
         once = false;
         self.pending--;
@@ -91,7 +82,6 @@ class Queuing extends EventEmitter {
           }
         }
       }
-
     }
     if (this.timeout) {
       timeoutId = setTimeout(() => {
@@ -149,21 +139,40 @@ class Queuing extends EventEmitter {
     this.running = false;
     this.emit('end', err);
   }
-}
-const arrayMethods = ['pop', 'shift', 'indexOf', 'lastIndexOf'];
-arrayMethods.forEach(method => {
-  Queuing.prototype[method] = function (...args) {
-    return Array.prototype[method].apply(this.jobs, args);
-  };
-});
-const arrayAddMethods = ['push', 'unshift', 'splice'];
-arrayAddMethods.forEach(method => {
-  Queuing.prototype[method] = function (...args) {
-    const methodResult = Array.prototype[method].apply(this.jobs, args);
+  _promisify(j) {
+    if (typeof j === 'function') {
+      j[util.promisify.custom] = (cb) => new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const o = j(cb);
+          if (o && o.then) {
+            o.then(r => {
+              resolve(r);
+            }).catch(e => {
+              reject(e || true);
+            });
+          }
+        }, this.delay);
+      });
+      return util.promisify(j);
+    } else {
+      return j;
+    }
+  }
+  push(...args) {
+    args = args.map(j => this._promisify(j));
+    const methodResult = Array.prototype.push.apply(this.jobs, args);
     if (this.autostart) {
       this.start();
     }
     return methodResult;
-  };
-});
+  }
+  unshift(...args) {
+    args = args.map(j => this._promisify(j));
+    const methodResult = Array.prototype.unshift.apply(this.jobs, args);
+    if (this.autostart) {
+      this.start();
+    }
+    return methodResult;
+  }
+}
 module.exports = opts => new Queuing(opts);
