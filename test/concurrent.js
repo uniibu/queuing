@@ -6,8 +6,7 @@ tape('concurrent', t => {
   const q = queue();
   q.concurrency = 2;
   q.push(cb => {
-    setTimeout(() => {
-  
+    setTimeout(() => {  
       actual.push('two');
       cb();
     }, 20);

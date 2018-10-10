@@ -10,7 +10,7 @@ require('./error-async');
 require('./error-promise');
 require('./resume');
 require('./autostart');
-require('./array-methods');
 require('./promises');
 require('./retry');
+require('./delay');
 require('./results');

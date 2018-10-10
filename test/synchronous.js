@@ -5,7 +5,7 @@ tape('synchronous', t => {
   const actual = [];
   const q = queue({ concurrency: 1 });
   q.on('end', () => {
-    const expected = ['one', 'two', 'three'];
+    const expected = ['three', 'one', 'two'];
     t.equal(actual.length, expected.length);
     t.deepEqual(actual, expected);
   });
@@ -13,11 +13,11 @@ tape('synchronous', t => {
     actual.push('three');
     cb();
   });
-  q.unshift(cb => {
+  q.push(cb => {
     actual.push('one');
     cb();
   });
-  q.splice(1, 0, cb => {
+  q.push(cb => {
     actual.push('two');
     cb();
   });

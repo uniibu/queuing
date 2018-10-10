@@ -14,15 +14,15 @@ tape('promises', t => {
     }
   });
   q.push(() => new Promise((resolve) => {
-    actual.push('three');
-    resolve();
-  }));
-  q.unshift(() => new Promise((resolve) => {
     actual.push('one');
     resolve();
   }));
-  q.splice(1, 0, () => new Promise((resolve) => {
+  q.push(() => new Promise((resolve) => {
     actual.push('two');
+    resolve();
+  }));
+  q.push(() => new Promise((resolve) => {
+    actual.push('three');
     resolve();
   }));
   q.start();
