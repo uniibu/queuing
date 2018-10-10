@@ -161,7 +161,7 @@ The latest stable release is published to [npm](http://npmjs.org/queuing).
 * [1.0.0](https://github.com/uniibu/queuing/archive/1.0.0.tar.gz)
   * Initial fork
   * New `reque` option
-* [1.0.1](https://github.com/uniibu/queuing/archive/1.0.1.tar.gz)
+* [1.1.0](https://github.com/uniibu/queuing/archive/1.0.1.tar.gz)
   * Removal of non-useful Array methods
   * Refactor test
   * Rename `reque` option to `retry` option
