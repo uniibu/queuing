@@ -7,7 +7,7 @@ ________                      .__
        \__>           \/              \//_____/  
 ```
 
-A Forked module from [queue](https://github.com/jessetane/queue) with ES6 Syntax, and a `reque` feature
+A Forked module from [queue](https://github.com/jessetane/queue) with ES6 Syntax, and a `retry` feature
 
 Asynchronous function queue with adjustable concurrency.
 
@@ -16,10 +16,81 @@ Asynchronous function queue with adjustable concurrency.
 
 This module exports a class `Queuing` that implements most of the `Array` API. Pass async functions (ones that accept a callback or return a promise) to an instance's additive array methods. Processing begins when you call `q.start()`.
 
+## Install
+`npm install queuing`
+
+## Test
+`npm test`
+`npm run test-browser`
+
+## API
+
+### `var q = queuing([opts])`
+Constructor. `opts` may contain inital values for:
+* `q.concurrency`
+* `q.timeout`
+* `q.autostart`
+* `q.results`
+* `q.retry`
+* `q.delay`
+
+## Instance methods
+### `q.start([cb])`
+cb, if passed, will be called when the queue empties or when an error occurs.
+
+### `q.stop()`
+Stops the queue. can be resumed with `q.start()`.
+
+### `q.end([err])`
+Stop and empty the queue immediately.
+
+## Instance methods mixed in from `Array`
+Mozilla has docs on how these methods work [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array).
+### `q.push(element1, ..., elementN)`
+### `q.unshift(element1, ..., elementN)`
+
+## Properties
+### `q.concurrency`
+Max number of jobs the queue should process concurrently, defaults to `Infinity`.
+
+### `q.timeout`
+Milliseconds to wait for a job to execute its callback.
+
+### `q.autostart`
+Ensures the queue is always running if jobs are available. Useful in situations where you are using a queue only for concurrency control.
+
+### `q.results`
+An array to set job callback arguments on.
+
+### `q.retry`
+Put back the job in que upon error.
+
+### `q.delay`
+Milliseconds to wait before job execution per session
+
+### `q.length`
+Jobs pending + jobs to process (readonly).
+
+## Events
+
+### `q.emit('success', result, job)`
+After a job executes its callback.
+
+### `q.emit('error', err, job)`
+After a job passes an error to its callback.
+
+### `q.emit('retry', err, job)`
+After a job passes an error and queued back to jobs list
+
+### `q.emit('timeout', continue, job)`
+After `q.timeout` milliseconds have elapsed and a job has not executed its callback.
+
+### `q.emit('end'[, err])`
+After all jobs have been processed
+
 ## Example
-`npm run example`
 ``` javascript
-var queue = require('../')
+var queue = require('queuing')
 
 var q = queue()
 var results = []
@@ -54,11 +125,6 @@ q.unshift(function (cb) {
   cb()
 })
 
-q.splice(2, 0, function (cb) {
-  results.push('three')
-  cb()
-})
-
 // use the timeout feature to deal with jobs that
 // take too long or forget to execute a callback
 q.timeout = 100
@@ -90,88 +156,18 @@ q.start(function (err) {
   console.log('all done:', results)
 })
 ```
-
-## Install
-`npm install queuing`
-
-## Test
-`npm test`
-`npm run test-browser`
-
-## API
-
-### `var q = queuing([opts])`
-Constructor. `opts` may contain inital values for:
-* `q.concurrency`
-* `q.timeout`
-* `q.autostart`
-* `q.results`
-* `q.reque`
-
-## Instance methods
-### `q.start([cb])`
-cb, if passed, will be called when the queue empties or when an error occurs.
-
-### `q.stop()`
-Stops the queue. can be resumed with `q.start()`.
-
-### `q.end([err])`
-Stop and empty the queue immediately.
-
-## Instance methods mixed in from `Array`
-Mozilla has docs on how these methods work [here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array). Note that `slice` does not copy the queue.
-### `q.push(element1, ..., elementN)`
-### `q.unshift(element1, ..., elementN)`
-### `q.splice(index , howMany[, element1[, ...[, elementN]]])`
-### `q.pop()`
-### `q.shift()`
-### `q.slice(begin[, end])`
-### `q.reverse()`
-### `q.indexOf(searchElement[, fromIndex])`
-### `q.lastIndexOf(searchElement[, fromIndex])`
-
-## Properties
-### `q.concurrency`
-Max number of jobs the queue should process concurrently, defaults to `Infinity`.
-
-### `q.timeout`
-Milliseconds to wait for a job to execute its callback.
-
-### `q.autostart`
-Ensures the queue is always running if jobs are available. Useful in situations where you are using a queue only for concurrency control.
-
-### `q.results`
-An array to set job callback arguments on.
-
-### `q.reque`
-Put back the job in que upon error.
-
-### `q.length`
-Jobs pending + jobs to process (readonly).
-
-## Events
-
-### `q.emit('success', result, job)`
-After a job executes its callback.
-
-### `q.emit('error', err, job)`
-After a job passes an error to its callback.
-
-### `q.emit('retry', err, job)`
-After a job passes an error and queued back to jobs list
-
-### `q.emit('timeout', continue, job)`
-After `q.timeout` milliseconds have elapsed and a job has not executed its callback.
-
-### `q.emit('end'[, err])`
-After all jobs have been processed
-
 ## Releases
 The latest stable release is published to [npm](http://npmjs.org/queuing).
 * [1.0.0](https://github.com/uniibu/queuing/archive/1.0.0.tar.gz)
   * Initial fork
   * New `reque` option
-
+* [1.0.1](https://github.com/uniibu/queuing/archive/1.0.1.tar.gz)
+  * Removal of non-useful Array methods
+  * Refactor test
+  * Rename `reque` option to `retry` option
+  * Add `delay` option
+  * Emitter will only emit `end` event if the job que is empty on process.nextTick's event, approx 4-5 millisecond
+  * Wrap all jobs inside a promise
 
 ## Releases from original module
 The latest stable release is published to [npm](http://npmjs.org/queue). Abbreviated changelog below:
