@@ -1,6 +1,13 @@
 pipeline:
-  build:
+  node_8:
+    image: node:8
+    group: build
+    commands:
+      - yarn
+      - yarn drone
+  node_10:
     image: node:10.11.0
+    group: build
     commands:
       - yarn
       - yarn drone
