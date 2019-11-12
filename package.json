@@ -1,16 +1,16 @@
 {
   "name": "queuing",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "que tasks",
   "private": false,
   "engines": {
-    "node": ">=8 <=10"
+    "node": ">=8 <=12"
   },
   "main": "index.js",
   "scripts": {
     "test": "node test",
     "lint": "eslint --fix --ext .js .",
-    "drone": "istanbul cover test --report lcovonly",
+    "cover": "nyc --reporter=lcov node test",
     "patch": "npm version patch && npm publish",
     "minor": "npm version minor && npm publish",
     "major": "npm version major && npm publish",
@@ -27,9 +27,9 @@
   },
   "homepage": "https://github.com/uniibu/queuing#readme",
   "devDependencies": {
-    "eslint": "5.8.0",
-    "istanbul": "0.4.5",
-    "tape": "4.9.2"
+    "eslint": "6.6.0",
+    "nyc": "^14.1.1",
+    "tape": "4.11.0"
   },
   "dependencies": {}
 }

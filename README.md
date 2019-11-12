@@ -21,7 +21,6 @@ This module exports a class `Queuing` that implements most of the `Array` API. P
 
 ## Test
 `npm test`
-`npm run test-browser`
 
 ## API
 
@@ -161,13 +160,18 @@ The latest stable release is published to [npm](http://npmjs.org/queuing).
 * [1.0.0](https://github.com/uniibu/queuing/archive/1.0.0.tar.gz)
   * Initial fork
   * New `reque` option
-* [1.1.0](https://github.com/uniibu/queuing/archive/1.0.1.tar.gz)
+* [1.1.0](https://github.com/uniibu/queuing/archive/1.1.0.tar.gz)
   * Removal of non-useful Array methods
   * Refactor test
   * Rename `reque` option to `retry` option
   * Add `delay` option
   * Emitter will only emit `end` event if the job que is empty on process.nextTick's event, approx 4-5 millisecond
   * Wrap all jobs inside a promise
+
+* [1.3.0](https://github.com/uniibu/queuing/archive/1.3.0.tar.gz)
+  * Update modules
+  * Extend nodejs compatibilty to Nodejs 12
+  * Use Travis
 
 ## Releases from original module
 The latest stable release is published to [npm](http://npmjs.org/queue). Abbreviated changelog below:
