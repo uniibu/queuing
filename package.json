@@ -4,7 +4,7 @@
   "description": "que tasks",
   "private": false,
   "engines": {
-    "node": ">=8 <=12"
+    "node": "<=18"
   },
   "main": "index.js",
   "scripts": {
